@@ -1,6 +1,6 @@
 {
   "name": "electron-symbol-dl",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "downloads an electron release symbol zip",
   "main": "index.js",
   "scripts": {
