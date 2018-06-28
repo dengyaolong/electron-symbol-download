@@ -1,0 +1,28 @@
+{
+  "name": "electron-symbol-download",
+  "version": "1.0.0",
+  "description": "downloads an electron release symbol zip",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dengyaolong/electron-symbol-download.git"
+  },
+  "keywords": [
+    "electron",
+    "symbol"
+  ],
+  "author": "dengyaolong",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dengyaolong/electron-symbol-download/issues"
+  },
+  "homepage": "https://github.com/dengyaolong/electron-symbol-download#readme",
+  "dependencies": {
+    "download": "^7.0.0",
+    "npmview": "0.0.4",
+    "sha256-file": "^1.0.0"
+  }
+}
