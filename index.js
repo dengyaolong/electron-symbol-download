@@ -7,12 +7,14 @@ const sha256File = require('sha256-file');
 
 
 const MIRROR = 'https://npm.taobao.org/mirrors/electron/'
-const PLATFORMS = ['darwin-x64', 'win32-ia32', 'win32-x64'];
+const PLATFORMS = ['darwin-x64', 'win32-ia32', 'win32-x64', 'linux-arm', 'linux-arm64', 'linux-armv7l', 'linux-ia32', 'linux-x64', 'mas-x64']
 
 function getSymbols(version, pts) {
+    console.log(`${MIRROR}v${version}/SHASUMS256.txt`)
     let symbols = pts.map(pt =>`electron-v${version}-${pt}-symbols.zip`)
     return download(`${MIRROR}${version}/SHASUMS256.txt`)
         .then(data => {
+            console.log(data)
             let lines = data.toString().split('\n')
             let shaAndSymbol = lines
                 .filter(line => {
@@ -24,10 +26,14 @@ function getSymbols(version, pts) {
                 })
             return shaAndSymbol
         })
+        .catch(console.log)
 }
 
 function downloadSymbol({symbol, sha256, version, target}) {
+    console.log(target, symbol)
     target = path.resolve(target, symbol)
+    console.log(target)
+    console.log(`${MIRROR}${version}/${symbol}`)
     return download(`${MIRROR}${version}/${symbol}`)
         .then(data => {
             fs.writeFileSync(target, data);
@@ -57,15 +63,18 @@ function getElectronVersions() {
     })
 }
 
-function downloadElectron({versions, pts=PLATFORMS, target}) {
+function downloadElectron({versions, pts=PLATFORMS, target=__dirname}) {
+    console.log(versions)
     if(!versions) return Promise.resolve([])
     if(!Array.isArray(versions)) {
         versions = [versions]
     }
     if(versions.length === 0) return Promise.resolve([])
     return Promise.all(versions.map(version => {
+        console.log(version)
        return getSymbols(version, pts)
             .then(symbols => {
+                console.log(symbols)
                 return Promise.all(symbols.map(symbol => {
                     symbol.target = target
                     return downloadSymbol(symbol)
@@ -85,5 +94,5 @@ function downloadAll({pts=PLATFORMS, target}) {
         })
 }
 
-module.exports = download
+module.exports = downloadElectron
 module.exports.downloadAll = downloadAll
