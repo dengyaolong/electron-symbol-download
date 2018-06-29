@@ -19,10 +19,13 @@
   "bugs": {
     "url": "https://github.com/dengyaolong/electron-symbol-download/issues"
   },
+  "files": ["index.js"],
   "homepage": "https://github.com/dengyaolong/electron-symbol-download#readme",
   "dependencies": {
     "download": "^7.0.0",
+    "fs-extra": "^6.0.1",
     "npmview": "0.0.4",
-    "sha256-file": "^1.0.0"
+    "sha256-file": "^1.0.0",
+    "unzip": "^0.1.11"
   }
 }

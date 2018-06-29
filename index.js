@@ -1,7 +1,9 @@
 
 const npmview = require('npmview');
 const download = require('download')
-const fs = require('fs')
+const fs = require('fs-extra')
+const fstream = require('fstream')
+const unzip = require('unzip')
 const path = require('path')
 const sha256File = require('sha256-file');
 
@@ -27,22 +29,48 @@ function getSymbols(version, pts) {
 }
 
 function downloadSymbol({symbol, sha256, version, target}) {
-    target = path.resolve(target, symbol)
-    return download(`${MIRROR}${version}/${symbol}`)
-        .then(data => {
-            fs.writeFileSync(target, data);
-        })
+    let zipTarget = path.resolve(target, symbol)
+    let downloadPromise;
+    if(fs.existsSync(zipTarget)) {
+        downloadPromise = Promise.resolve()
+    } else {
+        downloadPromise = download(`${MIRROR}${version}/${symbol}`)
+            .then(data => {
+                fs.writeFileSync(zipTarget, data);
+            })
+    }
+    return downloadPromise
         .then(() => {
-            let theSha256 = sha256File(target)
+            let theSha256 = sha256File(zipTarget)
             if(theSha256 === sha256) {
                 // 解压到指定的文件目录
-                return target
+                return zipTarget
             } else {
-                fs.removeFileSync(target)
+                fs.removeFileSync(zipTtarget)
                 return Promise.reject('download Failed')
             }
         })
+        .then(zipPath => {
+            var readStream = fs.createReadStream(zipPath);
+            let unzipDir = path.resolve(target, symbol.replace(/.zip$/, ''));
+            if(fs.existsSync(unzipDir)) {
+                return unzipDir
+            }
+            fs.ensureDirSync(unzipDir)
+            var writeStream = fstream.Writer(unzipDir);
+            readStream
+              .pipe(unzip.Parse())
+              .pipe(writeStream)
+            return new Promise((resolve, reject) => {
+                writeStream
+                    .on('close', () => {
+                        resolve(unzipDir)
+                    })
+                    .on('error', reject)
+            })
+        })
 }
+
 
 function getElectronVersions() {
     return new Promise((resolve, reject) => {
