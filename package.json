@@ -24,6 +24,7 @@
   ],
   "homepage": "https://github.com/dengyaolong/electron-symbol-download#readme",
   "dependencies": {
+    "chunk": "0.0.2",
     "download": "^7.0.0",
     "fs-extra": "^6.0.1",
     "npmview": "0.0.4",
