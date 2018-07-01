@@ -138,7 +138,7 @@ async function downloadAll({pts=PLATFORMS, target, debug=noop, chunkSize=1}) {
         let versions = chunkedVersions[i]
         debug('will download versions', JSON.stringify(versions))
         try {
-            let r = await downloadElectronSymbols({versions: versions, pts: pts, target: target})
+            let r = await downloadElectronSymbols({versions, pts, target, debug})
             res = res.concat(r)
             debug('res', res)
         } catch(e) {
